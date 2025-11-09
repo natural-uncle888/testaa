@@ -3590,36 +3590,78 @@ function closeIgnoreManager() {
 function getIgnoredEntries() {
   const all = (typeof orders !== 'undefined') ? orders : [];
   const entries = [];
-  ignored.forEach(id => {
-    const o = all.find(x => (x.id||x._id||'') === id);
-    if (o) {
-      // ensure _ts exists
-      let ts = o._ts;
-      if (!ts) {
-        if (o.datetimeISO) ts = new Date(o.datetimeISO);
-        else if (o.date && o.time) ts = new Date(String(o.date) + ' ' + String(o.time));
-        else if (o.date) ts = new Date(o.date);
-        else ts = new Date(o.createdAt || Date.now());
-      }
-      entries.push({
-        id: id,
-        date: (ts && !isNaN(ts)) ? ts.toLocaleString() : (o.date || ''),
-        customer: o.customer || '',
-        phone: (Array.isArray(o.phones) && o.phones[0]) ? o.phones[0] : (o.phone || ''),
-        address: o.address || '',
-        raw: o
-      });
-    } else {
-      entries.push({ id, date:'', customer:'(找不到訂單)', phone:'', address:'' });
+
+  // --- Legacy: global ignored IDs ---
+  const ignoredIds = loadIgnoredHistoryIds();
+  ignoredIds.forEach(id => {
+    const o = all.find(x => (x.id||x._id||'') === id) || {};
+    let ts = o._ts;
+    if (!ts) {
+      if (o.datetimeISO) ts = new Date(o.datetimeISO);
+      else if (o.date && o.time) ts = new Date(String(o.date) + ' ' + String(o.time));
+      else if (o.date) ts = new Date(o.date);
+      else ts = new Date(o.createdAt || Date.now());
     }
+    const phone = (Array.isArray(o.phones) && o.phones[0]) ? o.phones[0] : (o.phone || '');
+    entries.push({
+      kind: 'id',
+      id: id,
+      date: (ts && !isNaN(ts)) ? ts.toLocaleString() : (o.date || ''),
+      customer: o.customer || '',
+      phone: phone,
+      address: o.address || '',
+      raw: o
+    });
   });
-  // sort by date desc if possible
-  entries.sort((a,b) => {
-    if (!a.date && !b.date) return 0;
-    if (!a.date) return 1;
-    if (!b.date) return -1;
-    return (new Date(b.date)) - (new Date(a.date));
+
+  // --- New: pair-based ignores (A::B). Display basic info for both sides.
+  const ignoredPairs = (typeof loadIgnoredHistoryPairs === 'function') ? loadIgnoredHistoryPairs() : new Set();
+  ignoredPairs.forEach(key => {
+    const parts = String(key || '').split('::');
+    const a = parts[0] || '';
+    const b = parts[1] || '';
+    const oa = all.find(x => (x.id||x._id||'') === a) || null;
+    const ob = all.find(x => (x.id||x._id||'') === b) || null;
+
+    // Choose a display order (prefer target B info if present)
+    const disp = ob || oa || {};
+    let ts = disp._ts;
+    if (!ts) {
+      if (disp.datetimeISO) ts = new Date(disp.datetimeISO);
+      else if (disp.date && disp.time) ts = new Date(String(disp.date) + ' ' + String(disp.time));
+      else if (disp.date) ts = new Date(disp.date);
+      else ts = new Date(disp.createdAt || Date.now());
+    }
+
+    const getPhone = (o) => (o && Array.isArray(o.phones) && o.phones[0]) ? o.phones[0] : ((o && o.phone) || '');
+    const nameA = (oa && oa.customer) ? oa.customer : a;
+    const nameB = (ob && ob.customer) ? ob.customer : b;
+    const phoneA = getPhone(oa);
+    const phoneB = getPhone(ob);
+    const addrA = (oa && oa.address) ? oa.address : '';
+    const addrB = (ob && ob.address) ? ob.address : '';
+
+    entries.push({
+      kind: 'pair',
+      id: key,
+      fromId: a,
+      toId: b,
+      date: (ts && !isNaN(ts)) ? ts.toLocaleString() : (disp.date || ''),
+      customer: `${nameA} ↔ ${nameB}`.trim(),
+      phone: [phoneA, phoneB].filter(Boolean).join(' / '),
+      address: [addrA, addrB].filter(Boolean).join(' / '),
+      rawA: oa,
+      rawB: ob
+    });
   });
+
+  // Optional: sort newest first if possible by parsing date (fallback to string)
+  entries.sort((x, y) => {
+    const dx = Date.parse(x.date || '') || 0;
+    const dy = Date.parse(y.date || '') || 0;
+    return dy - dx;
+  });
+
   return entries;
 }
 function renderIgnoreManagerTable(filterText) {
@@ -3630,19 +3672,19 @@ function renderIgnoreManagerTable(filterText) {
   const q = (filterText||'').toLowerCase();
   list.forEach(e => {
     if (q) {
-      const combined = `${e.id} ${e.customer} ${e.phone} ${e.address}`.toLowerCase();
+      const combined = `${e.kind||''} ${e.id} ${e.customer} ${e.phone} ${e.address}`.toLowerCase();
       if (!combined.includes(q)) return;
     }
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td style="padding:6px;"><input type="checkbox" class="ignore-row-checkbox" data-id="${e.id}"></td>
+      <td style="padding:6px;"><input type="checkbox" class="ignore-row-checkbox" data-kind="${e.kind||'id'}" data-id="${e.id}" data-from="${e.fromId||''}" data-to="${e.toId||''}"></td>
       <td class="no-wrap" style="padding:6px;">${escapeHtml(e.date)}</td>
       <td class="no-wrap" style="padding:6px;">${escapeHtml(e.customer)}</td>
       <td class="no-wrap" style="padding:6px;">${escapeHtml(e.phone)}</td>
       <td style="padding:6px;">${escapeHtml(e.address)}</td>
       <td class="no-wrap" style="padding:6px;">
-        <button class="btn-small ignore-unignore" data-id="${e.id}">取消忽略</button>
-        <button class="btn-small ignore-view" data-id="${e.id}">查看</button>
+        <button class="btn-small ignore-unignore" data-kind="${e.kind||'id'}" data-id="${e.id}" data-from="${e.fromId||''}" data-to="${e.toId||''}">取消忽略</button>
+        <button class="btn-small ignore-view" data-kind="${e.kind||'id'}" data-id="${e.id}" data-from="${e.fromId||''}" data-to="${e.toId||''}">查看</button>
       </td>
     `;
     tbody.appendChild(tr);
@@ -3652,9 +3694,16 @@ function renderIgnoreManagerTable(filterText) {
   tbody.querySelectorAll('.ignore-unignore').forEach(btn=>{
     btn.addEventListener('click', ev=>{
       const id = ev.currentTarget.dataset.id;
-      const s = loadIgnoredHistoryIds();
-      s.delete(id);
-      saveIgnoredHistoryIds(s);
+      const kind = ev.currentTarget.dataset.kind || 'id';
+      if (kind === 'pair') {
+        const pairs = (typeof loadIgnoredHistoryPairs === 'function') ? loadIgnoredHistoryPairs() : new Set();
+        pairs.delete(id);
+        if (typeof saveIgnoredHistoryPairs === 'function') saveIgnoredHistoryPairs(pairs);
+      } else {
+        const s = loadIgnoredHistoryIds();
+        s.delete(id);
+        saveIgnoredHistoryIds(s);
+      }
       try { rebuildCustomerHistoryMap(); } catch(e){}
       try { transformCustomerCells(); } catch(e){}
       renderIgnoreManagerTable(document.getElementById('ignoreManagerSearch').value);
@@ -3663,13 +3712,18 @@ function renderIgnoreManagerTable(filterText) {
   });
   tbody.querySelectorAll('.ignore-view').forEach(btn=>{
     btn.addEventListener('click', ev=>{
-      const id = ev.currentTarget.dataset.id;
-      const ord = (typeof orders !== 'undefined') ? (orders.find(x => (x.id||x._id||'') === id) || null) : null;
+      const kind = ev.currentTarget.dataset.kind || 'id';
+      let openId = ev.currentTarget.dataset.id;
+      if (kind === 'pair') {
+        // Prefer opening the 'to' side; fallback to 'from'
+        openId = ev.currentTarget.dataset.to || ev.currentTarget.dataset.from || openId;
+      }
+      const ord = (typeof orders !== 'undefined') ? (orders.find(x => (x.id||x._id||'') === openId) || null) : null;
       if (ord) {
-        fillForm(ord); // open in form
+        fillForm(ord);
         closeIgnoreManager();
       } else {
-        alert('找不到訂單：' + id);
+        alert('找不到訂單：' + openId);
       }
     });
   });
@@ -3678,7 +3732,7 @@ function renderIgnoreManagerTable(filterText) {
 function updateIgnoreCountBadge() {
   const badge = document.getElementById('ignoreCountBadge');
   if (!badge) return;
-  const size = loadIgnoredHistoryIds().size;
+  const size = (loadIgnoredHistoryIds().size) + ((typeof loadIgnoredHistoryPairs==='function') ? loadIgnoredHistoryPairs().size : 0);
   badge.textContent = size ? (size>99 ? '99+' : String(size)) : '';
   badge.style.display = size ? 'inline-block' : 'none';
 }
@@ -3709,6 +3763,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const ok = await showConfirm('清空忽略清單','確定要清空所有忽略清單嗎？此操作可還原但會刪除本機記錄。');
     if (!ok) return;
     saveIgnoredHistoryIds(new Set());
+    if (typeof saveIgnoredHistoryPairs === 'function') saveIgnoredHistoryPairs(new Set());
     try { rebuildCustomerHistoryMap(); } catch(e){}
     try { transformCustomerCells(); } catch(e){}
     renderIgnoreManagerTable(document.getElementById('ignoreManagerSearch').value);
@@ -3720,11 +3775,25 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
   const unignoreSelBtn = document.getElementById('ignoreUnignoreSelected');
   if (unignoreSelBtn) unignoreSelBtn.addEventListener('click', ()=>{
-    const checks = Array.from(document.querySelectorAll('.ignore-row-checkbox:checked')).map(c=>c.dataset.id);
+    const checks = Array.from(document.querySelectorAll('.ignore-row-checkbox:checked'));
     if (!checks.length) { if (typeof showAlert === 'function') { showAlert('此頁面說明','未選取任何項目'); } else { alert('未選取任何項目'); }; return; }
-    const s = loadIgnoredHistoryIds();
-    checks.forEach(id => s.delete(id));
-    saveIgnoredHistoryIds(s);
+    const idsToRemove = [];
+    const pairsToRemove = [];
+    checks.forEach(c => {
+      const kind = c.dataset.kind || 'id';
+      const id = c.dataset.id;
+      if (kind === 'pair') pairsToRemove.push(id); else idsToRemove.push(id);
+    });
+    if (idsToRemove.length) {
+      const s = loadIgnoredHistoryIds();
+      idsToRemove.forEach(id => s.delete(id));
+      saveIgnoredHistoryIds(s);
+    }
+    if (pairsToRemove.length && typeof loadIgnoredHistoryPairs === 'function') {
+      const pset = loadIgnoredHistoryPairs();
+      pairsToRemove.forEach(k => pset.delete(k));
+      if (typeof saveIgnoredHistoryPairs === 'function') saveIgnoredHistoryPairs(pset);
+    }
     try { rebuildCustomerHistoryMap(); } catch(e){}
     try { transformCustomerCells(); } catch(e){}
     renderIgnoreManagerTable(document.getElementById('ignoreManagerSearch').value);
