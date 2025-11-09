@@ -1,0 +1,1057 @@
+:root {
+  --bg: #e0e7ef;
+  --card: #ffffff;
+  --muted: #374151;
+  --text: #111827;
+  --primary: #2563eb;
+  --primary-weak: #bfdbfe;
+  --accent: #059669;
+  --warn: #d97706;
+  --danger: #dc2626;
+  --border: #94a3b8;
+  --radius: 16px;
+  --shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+}
+
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:system-ui, -apple-system, "Noto Sans TC", Segoe UI, Roboto, Helvetica, Arial;
+      background:linear-gradient(180deg,var(--bg),#eef2ff);
+      color:var(--text);
+    }
+    header{
+      position:sticky;top:0;z-index:10;
+      background:rgba(255,255,255,.8);backdrop-filter:saturate(1.2) blur(8px);
+      border-bottom:1px solid var(--border);
+    }
+    .wrap{max-width:1200px;margin:0 auto;padding:16px}
+    .stack{display:flex;flex-direction:column;gap:16px}
+    .card{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);
+    }
+    .card h2{margin:0;padding:14px 16px;border-bottom:1px solid var(--border);font-size:18px}
+    .card .body{padding:16px}
+    .row{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin-bottom:12px}
+    @media (max-width:900px){.row{grid-template-columns:repeat(6,1fr)}}
+    label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+    input,select,textarea,button{font:inherit}
+    input[type="text"],input[type="date"],input[type="time"],input[type="number"],select,textarea{
+      width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:#fff;outline:none;
+    }
+    textarea{min-height:72px;resize:vertical}
+    .muted{color:var(--muted)}
+    .pill{
+      border-radius:999px;padding:8px 12px;border:1px solid var(--border);background:#fff;display:inline-flex;gap:8px;align-items:center
+    }
+    .toolbar{display:flex;flex-wrap:wrap;gap:8px}
+    .toolbar button, .toolbar .right button{
+      padding:10px 14px;border-radius:999px;border:1px solid var(--border);
+      background:#fff;color:var(--text);cursor:pointer
+    }
+    .toolbar .primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .toolbar .accent{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .toolbar .warn{background:var(--warn);color:#111}
+    .toolbar .danger{background:var(--danger);color:#fff}
+    .toolbar .right{margin-left:auto;display:flex;gap:8px}
+    table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border-radius:12px;border:1px solid var(--border)}
+    thead th{background:#f3f4f6;color:#374151;font-weight:600;text-align:left;font-size:12px;padding:10px;border-bottom:1px solid var(--border)}
+    tbody td{padding:10px;border-bottom:1px solid var(--border);vertical-align:top}
+    tbody tr:hover{background:#fafafa}
+    .status{font-size:12px;padding:4px 8px;border-radius:999px;border:1px solid;cursor:pointer;user-select:none}
+    .status.P排定{color:#2563eb;border-color:#93c5fd;background:#eff6ff}
+    .status.C完成{color:#10b981;border-color:#a7f3d0;background:#ecfdf5}
+    .status.N未完成{color:#ef4444;border-color:#fecaca;background:#fef2f2}
+    .sum{display:flex;gap:12px;flex-wrap:wrap}
+    .sum .box{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 14px;min-width:170px;box-shadow:var(--shadow)}
+    .number{font-size:18px;font-weight:700}
+    .small{font-size:12px}
+    .hr{height:1px;background:var(--border);margin:8px 0 16px}
+    .inline-btn{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff;color:var(--text);cursor:pointer;margin-left:8px}
+    .right-align{text-align:right}
+    .editable{cursor:pointer}
+    .editable:hover{background:#f9fafb}
+    .checkpill{font-size:12px;padding:4px 8px;border-radius:999px;border:1px solid var(--border);background:#fff;cursor:pointer;user-select:none}
+    .checkpill.on{background:#ecfdf5;border-color:#a7f3d0;color:#059669}
+    .checkpill.off{background:#f9fafb;color:#6b7280}
+    .icon-btn{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff;cursor:pointer}
+    .icon-btn.danger{background:#fee2e2;border-color:#fecaca;color:#b91c1c}
+    .hidden{display:none !important}
+    .checkbox-group{display:flex;gap:8px;flex-wrap:wrap}
+    .checkbox{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);padding:6px 10px;border-radius:999px;background:#fff}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media (max-width:900px){.two-col{grid-template-columns:1fr}}
+    mark{background:#fde68a;padding:0 .15em;border-radius:3px}
+    .badge-soft{display:inline-block;padding:2px 8px;border-radius:999px;background:#f3f4f6;color:#374151;font-size:12px}
+    .lock-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#6b7280}
+    .tiny{font-size:11px;color:#6b7280}
+    /* Accordion */
+    details.accordion{border:1px solid var(--border);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow)}
+    details.accordion > summary{list-style:none;cursor:pointer;padding:14px 16px;border-radius:var(--radius);font-weight:600}
+    details.accordion[open] > summary{border-bottom:1px solid var(--border)}
+    details.accordion .content{padding:16px}
+  
+/* 增強按鈕視覺 */
+button, .toolbar button {
+  transition: background 0.2s ease, color 0.2s ease;
+}
+button:hover, .toolbar button:hover {
+  filter: brightness(1.1);
+}
+
+/* 主要按鈕強化 */
+.toolbar .primary {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+.toolbar .primary:hover {
+  background: #1e40af;
+}
+
+/* 強調按鈕（如 Google/新增） */
+.toolbar .accent {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.toolbar .accent:hover {
+  background: #047857;
+}
+
+/* 危險按鈕 hover 強化 */
+.toolbar .danger:hover {
+  background: #b91c1c;
+}
+
+/* 清晰的狀態圓角標籤 */
+.status {
+  font-weight: bold;
+  border-width: 2px;
+}
+
+/* 表格行 hover 高亮 */
+tbody tr:hover {
+  background: #f0f9ff;
+}
+
+/* 搜尋高亮 mark 顏色加深 */
+mark {
+  background: #facc15;
+  color: #000;
+}
+
+/* 強化輸入欄位與卡片對比 */
+input[type="text"],
+input[type="date"],
+input[type="time"],
+input[type="number"],
+select,
+textarea {
+  background: #f9fafb;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+/* hover 狀態加強 */
+button:hover,
+.toolbar button:hover {
+  filter: brightness(1.12);
+}
+
+/* 表格 hover 更明顯 */
+tbody tr:hover {
+  background: #dbeafe;
+}
+
+/* 強化表格標頭對比 */
+thead th {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+/* 搜尋 mark 強化 */
+mark {
+  background: #facc15;
+  padding: 0 0.2em;
+  border-radius: 2px;
+}
+
+/* === Mobile Enhancements === */
+@media (max-width: 768px) {
+  .wrap { padding: 12px; }
+  .toolbar { flex-direction: column; align-items: stretch; gap: 10px; }
+  .toolbar .right { margin-left: 0; width: 100%; display: flex; flex-direction: column; gap: 8px; }
+  .toolbar button, .toolbar .right button { width: 100%; min-height: 44px; font-size: 16px; }
+  .pill { width: 100%; }
+  .pill input, .pill select { width: 100% !important; }
+  .row { grid-template-columns: 1fr !important; }
+  .two-col { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 600px) {
+  /* Turn the big table into stacked cards */
+  table { border: 0; }
+  table thead { display: none; }
+  table tr { display: block; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 12px; padding: 8px; box-shadow: var(--shadow); }
+  table td { display: block; border: none; padding: 8px; text-align: left; }
+  table td.right-align { text-align: left; }
+  table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  /* Make pills/buttons comfortable to tap */
+  button, .toolbar button { min-height: 44px; }
+  input, select, textarea { font-size: 16px; } /* avoid iOS zoom */
+}
+
+
+/* === Prune columns & mobile keep-list (injected) === */
+th.col-slot, td.col-slot,
+th.col-total, td.col-total {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  table td { display: none !important; }
+  table td.keep-mobile { display: block !important; }
+}
+
+
+@media (max-width: 768px) {
+  .toolbar {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 12px;
+    width: 100%;
+  }
+  .toolbar > * {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box;
+  }
+  .toolbar .pill,
+  .toolbar label.pill {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    height: 44px;
+    padding: 0 16px !important;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 15px;
+    gap: 0;
+    margin: 0;
+    width: 100% !important;
+  }
+  .toolbar label.pill input[type="checkbox"] {
+    margin-right: 8px;
+    width: 22px;
+    height: 22px;
+    accent-color: #2563eb;
+    flex-shrink: 0;
+  }
+  .toolbar label.pill span {
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 15px;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+    display: block;
+  }
+  /* 所有按鈕都維持同寬同高 */
+  .toolbar .right {
+    display: contents !important;
+    width: 100%;
+    margin-left: 0;
+    gap: 0 !important;
+  }
+  .toolbar .right button {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 44px;
+    font-size: 15px;
+    margin: 0 !important;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* === Desktop vertical character display for 客戶/狀況/確認/報價單 === */
+@media (min-width: 768px) {
+  td.vtext {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    line-height: 1.1;
+  }
+}
+
+
+/* === Above-5F manual input === */
+#acFloorAboveWrap, #washerFloorAboveWrap {
+  margin-top: 6px;
+}
+#acFloorAbove, #washerFloorAbove {
+  width: 180px;
+  max-width: 100%;
+}
+
+/* === Floor info note appended to 地址 cell === */
+.floor-note {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 2px;
+  white-space: normal;
+}
+
+
+/* === Reminder badges === */
+.due-badge, .due-soon {
+  display: inline-block;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 6px;
+}
+.due-badge { background: #ffe5e5; color: #b00020; }
+.due-soon   { background: #fff7e0; color: #8a6d00; }
+
+
+/* === Due Soon Panel === */
+.card.due-panel {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 12px 0 16px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.card.due-panel .card-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.due-list .row {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr 1fr auto;
+  gap: 8px;
+  padding: 8px 6px;
+  border-bottom: 1px dashed #eee;
+  align-items: center;
+}
+.due-list .row:last-child { border-bottom: none; }
+.due-list .name { font-weight: 600; }
+.due-list .muted { opacity: .65; font-size: 12px; }
+.due-list .badge { font-size: 12px; padding: 2px 6px; border-radius: 999px; display: inline-block; }
+.due-list .badge.due { background: #ffe5e5; color: #b00020; }
+.due-list .badge.soon { background: #fff7e0; color: #8a6d00; }
+.due-list .row button { padding: 4px 8px; border-radius: 8px; }
+.due-list.empty { color: #666; font-size: 14px; padding: 8px; }
+@media (max-width: 768px) {
+  .card.due-panel { display: none; } /* 手機隱藏，避免擠版；如需手機也顯示可移除此行 */
+}
+
+
+/* === Reminder inline toolbar (under 居住地型態) === */
+#reminderToolbar input.compact { width: 100px; }
+#reminderToolbar input[disabled] { width: 140px; }
+#reminderToolbar .muted { opacity: .75; font-size: 12px; }
+
+
+/* === Staff icon styles (v2) === */
+.staff-cell { text-align: center; }
+.staff-icon { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; vertical-align: middle; }
+
+
+/* === Multi-phone UI === */
+#phoneContainer { display:flex; flex-direction:column; gap:8px; }
+.phone-input { width:100%; }
+#addPhoneBtn { margin-top:4px; background: var(--primary); color:#fff; border:none; border-radius:8px; padding:6px 12px; cursor:pointer; }
+
+/* === Multi-phone rows with remove button === */
+#phoneContainer { display: flex; flex-direction: column; gap: 8px; }
+.phone-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+.phone-input { width: 100%; }
+.phone-remove {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.06);
+  color: #ef4444;
+  padding:6px 8px;
+  border-radius:6px;
+  cursor:pointer;
+  transition: background .12s ease, transform .12s ease;
+}
+.phone-remove:hover{ background: rgba(239,68,68,0.06); transform: translateY(-1px); }
+
+/* === Force no-wrap for date/time cells (strong override) === */
+#ordersTable [data-label="日期"],
+#ordersTable [data-label="時間"],
+#ordersTable th[data-label="日期"],
+#ordersTable th[data-label="時間"] {
+  white-space: nowrap !important;
+  word-break: keep-all !important;    /* don't break at hyphens or anywhere */
+  overflow-wrap: normal !important;    /* cancel 'anywhere' if set elsewhere */
+  hyphens: none !important;
+  min-width: 7.5rem;                   /* give a bit of room so it fits */
+}
+
+/* === Copy buttons only on mobile === */
+.copy-btn {
+  display: none;
+  margin-left: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #6b7280;
+}
+.copy-btn:active { transform: scale(0.92); }
+@media (max-width: 768px) {
+  .copy-btn { display: inline; }
+}
+
+/* === Copy button stronger visibility (mobile/tablet) === */
+.copy-btn {
+  display: inline-block !important;
+  margin-left: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #6b7280;
+  vertical-align: middle;
+}
+.copy-btn:active { transform: scale(0.92); }
+
+@media (max-width: 992px) {
+  .copy-btn {
+    display: inline-block !important;
+  }
+}
+
+/* === Copy buttons always visible (guaranteed version) === */
+.copy-btn {
+  display: inline-block !important;
+  margin-left: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #6b7280;
+  vertical-align: middle;
+}
+.copy-btn:active { transform: scale(0.92); }
+
+
+.ab-toolbar { display:flex; gap:8px; align-items:center; margin-bottom:12px; }
+.ab-toolbar input[type="search"]{ flex:1; padding:8px 10px; border:1px solid var(--border); border-radius:10px; background:var(--card); }
+
+/* 靜音名單：恢復提醒按鈕與表格微調 */
+#muteListSection .icon-btn { border:1px solid var(--border); }
+#muteListSection .icon-btn:hover { filter: brightness(0.95); }
+
+
+/* ===== 靜音名單：數量顯示與上方留白修正 ===== */
+#muteListSection.card { padding: 0; }              /* 外層卡片取消預設 padding，避免收合時變厚 */
+#muteListSection summary { padding: 8px 12px; cursor: pointer; }
+#muteListSection summary h2 { display: inline; margin: 0; font-size: 1.1rem; }
+#muteListSection .hint { font-size: 0.9rem; opacity: 0.75; margin-left: 6px; }
+#muteListSection .body { padding: 12px; }          /* 改由內容本身控管內距 */
+#muteListSection[open] summary { border-bottom: 1px solid var(--border); }
+
+/* ====== column resizer UI ====== */
+#ordersTable { /* table-layout 固定已在你檔案內，但確保存在 */
+  table-layout: fixed;
+}
+
+/* resizer 把手 */
+#ordersTable th {
+  position: relative;
+  /* 確保 padding-right 有空間給把手 */
+  padding-right: 18px;
+}
+
+/* 可拖拉的把手（靠右） */
+.orders-col-resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 100%;
+  cursor: col-resize;
+  user-select: none;
+  touch-action: none;
+  /* 顯示一個窄條方便抓取 */
+  background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.04) 40%, rgba(0,0,0,0.08) 50%, rgba(0,0,0,0.04) 60%, transparent 100%);
+  opacity: 0.8;
+  z-index: 5;
+}
+
+/* 拖曳時可選擇狀態禁用文字選取 */
+.orders-col-resizing {
+  cursor: col-resize !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  user-select: none !important;
+}
+
+/* 小螢幕時把把手縮小或隱藏（避免遮擋） */
+@media (max-width: 600px) {
+  .orders-col-resizer { display: none; }
+}
+
+
+/* 年度區塊收合樣式 */
+#yearSummary {
+  overflow: hidden;
+  max-height: 1000px; /* 展開時的最大高度（確保足夠） */
+  transition: max-height 300ms ease, padding 200ms ease;
+  padding-top: 8px;
+}
+
+/* collapsed 狀態：收起 */
+#yearSummary.collapsed {
+  max-height: 0;
+  padding-top: 0;
+}
+
+/* 小按鈕樣式（可依專案風格微調） */
+.small-toggle{
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-left: 8px;
+}
+.small-toggle:focus{ outline: 2px solid rgba(0, 120, 210, 0.2); }
+
+
+
+/* --- Added for placing 年度統計 next to 訂單列表 and enlarging the button --- */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 12px 16px 8px 16px;
+}
+.card-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+.header-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Enlarge the 年度統計 toggle button */
+#toggleYearBtn, .small-toggle {
+  font-size: 1rem;
+  padding: 8px 12px;
+  min-height: 44px;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #f5f7fa;
+  border: 1px solid #d0d7df;
+}
+
+
+/* Year stat select styling */
+#yearStatSelect {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  min-width: 120px;
+}
+@media (max-width: 768px) {
+  #yearSummaryHeader { flex-direction: column; align-items: flex-start; gap:6px; }
+  #yearStatSelect { width: 100%; }
+}
+
+
+/* Customer history modal styles (added by assistant) */
+.modal { display:none; position:fixed; inset:0; z-index:9999; align-items:center; justify-content:center; }
+.modal[aria-hidden="false"] { display:flex; }
+.modal-backdrop { position:absolute; inset:0; background:rgba(0,0,0,0.45); }
+.modal-panel { position:relative; width:min(920px,95%); max-height:85vh; overflow:auto; background:#fff; border-radius:10px; box-shadow:0 8px 30px rgba(0,0,0,0.25); padding:12px; }
+.modal-header { display:flex; align-items:center; justify-content:space-between; gap:8px; padding-bottom:6px; border-bottom:1px solid #eee; }
+.modal-body { padding-top:8px; }
+.history-controls { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+.history-controls input { padding:8px 10px; border-radius:8px; border:1px solid var(--border); }
+.history-table-wrap { overflow:auto; }
+#historyTable { width:100%; border-collapse:collapse; }
+#historyTable th, #historyTable td { padding:8px 10px; border-bottom:1px solid #f2f2f2; text-align:left; vertical-align:top; }
+.btn-small { padding:6px 8px; font-size:13px; border-radius:6px; cursor:pointer; border:1px solid var(--border); background:var(--card-bg, #fff); }
+.customer-link { background:none;border:0;padding:0;margin:0;color:var(--brand, #0b74de);cursor:pointer;text-decoration:underline; }
+
+/* highlight for opened order */
+.highlight-row { outline: 3px solid rgba(11,116,222,0.25); background: rgba(11,116,222,0.05); }
+
+
+
+/* Customer name styling when no history exists */
+.customer-nohistory { color: var(--muted, #7b8794); cursor:default; text-decoration:none; }
+.customer-link { color: var(--brand, #0b74de); cursor: pointer; text-decoration: underline; background: none; border: 0; padding: 0; }
+
+
+/* customer badge style: name + count */
+.customer-badge { display:inline-flex; gap:8px; align-items:center; }
+.customer-badge .badge {
+  background:var(--brand, #0b74de);
+  color:#fff;
+  border-radius:999px;
+  padding:2px 8px;
+  font-size:12px;
+  font-weight:600;
+  margin-left:6px;
+  line-height:1;
+}
+.customer-badge .customer-link { background:none;border:0;color:var(--brand);text-decoration:underline;cursor:pointer;padding:0;font-weight:600; }
+
+
+/* Layout editor styles (scoped to order form) */
+#orderForm.layout-edit-mode .col {
+  outline: 1px dashed rgba(0,0,0,0.12);
+  position: relative;
+}
+#orderForm .layout-controls { display: none; position: absolute; top:6px; right:6px; gap:6px; z-index:50; }
+#orderForm.layout-edit-mode .layout-controls { display: flex; }
+#orderForm .layout-controls button { font-size:12px; padding:4px 6px; border-radius:4px; border:1px solid #ddd; background:#fff; cursor:pointer; }
+#orderForm .layout-controls button.locked { background:#f6f6f6; }
+
+
+
+
+
+/* Improved clickable area and subtle hover animation for checkbox labels */
+/* Applies to existing .checkbox and .checkbox-group used by renderChecks() */
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin: 6px 6px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(250,250,250,0.98));
+  cursor: pointer;
+  user-select: none;
+  transition: transform 140ms ease, box-shadow 140ms ease, background-color 140ms ease, border-color 140ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Make the whole label area clearly interactive on hover/focus */
+.checkbox:hover,
+.checkbox:focus-within {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(20,24,40,0.06);
+  background-color: rgba(6, 95, 70, 0.03); /* subtle tint */
+  border-color: rgba(6,95,70,0.12);
+}
+
+/* Slightly different visual when the checkbox inside is checked */
+.checkbox input[type="checkbox"]:checked + span,
+.checkbox input[type="checkbox"]:checked {
+  /* no direct color change for input itself here; the .on class elsewhere handles color */
+}
+
+/* Ensure the input checkbox itself doesn't disrupt layout */
+.checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+/* The text label */
+.checkbox span {
+  display: inline-block;
+  line-height: 1;
+  font-size: 14px;
+  color: var(--text);
+  padding-right: 4px;
+}
+
+/* Improve accessibility focus ring for keyboard users */
+.checkbox:focus-within {
+  outline: 2px solid rgba(6,95,70,0.12);
+  outline-offset: 2px;
+}
+
+/* For very small screens, make them wrap nicely and occupy more width */
+@media (max-width: 520px) {
+  .checkbox { width: calc(50% - 12px); box-sizing: border-box; }
+  .checkbox span { font-size: 13px; }
+}
+/* 調整「其他品牌」輸入欄寬度與行為 */
+#acBrandOtherText{
+  width: 100%;          /* 滿版寬度（受容器寬度限制） */
+  max-width: 220px;     /* 最大寬度，可依需求改為 320 / 480 等 */
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  transition: max-width .18s ease, box-shadow .12s ease;
+}
+
+
+
+
+
+
+/* ==== big-toggle styles added by assistant (enhanced hover / lift / checked) ==== */
+.big-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 14px;
+  margin: 6px 0;
+  border-radius: 12px;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  transition: transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s ease, background .14s ease, border-color .12s ease;
+  box-sizing: border-box;
+  background: rgba(255,255,255,0.0);
+  will-change: transform, box-shadow, background;
+}
+
+/* make pointer obvious on hover (in addition to cursor) */
+.big-toggle:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(16,24,40,0.12);
+  background: rgba(255,255,255,0.6);
+  border-color: rgba(0,0,0,0.06);
+}
+
+/* pressed state (mouse down) */
+.big-toggle:active {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(16,24,40,0.09);
+}
+
+/* checkbox appearance */
+.big-toggle input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  flex: 0 0 auto;
+  appearance: auto;
+}
+
+/* text area */
+.big-toggle .big-toggle-text {
+  flex: 1 1 auto;
+  line-height: 1.2;
+  font-size: 14px;
+  color: var(--text, #222);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* keyboard focus */
+.big-toggle:focus-within {
+  outline: 2px solid rgba(11,102,255,0.12);
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+
+/* when the checkbox inside is focused, also show inner focus for accessibility */
+.big-toggle input[type="checkbox"]:focus {
+  box-shadow: 0 0 0 4px rgba(11,102,255,0.06);
+  border-radius: 6px;
+}
+
+/* checked text style */
+.big-toggle input[type="checkbox"]:focus + .big-toggle-text,
+.big-toggle input[type="checkbox"]:checked + .big-toggle-text {
+  font-weight: 700;
+  color: var(--accent, #0b66ff);
+}
+
+/* prefer modern :has() to style label when child is checked (works in modern browsers) */
+.big-toggle:has(input[type="checkbox"]:checked) {
+  background: linear-gradient(90deg, rgba(11,102,255,0.06), rgba(11,102,255,0.02));
+  border-color: rgba(11,102,255,0.14);
+  box-shadow: 0 12px 30px rgba(11,102,255,0.06);
+  transform: translateY(-4px);
+}
+
+/* JS fallback: when label has .checked (for broader browser support) */
+.big-toggle.checked {
+  background: linear-gradient(90deg, rgba(11,102,255,0.06), rgba(11,102,255,0.02));
+  border-color: rgba(11,102,255,0.14);
+  box-shadow: 0 12px 30px rgba(11,102,255,0.06);
+  transform: translateY(-4px);
+}
+
+/* subtle inner highlight for the checked text */
+.big-toggle.checked .big-toggle-text,
+.big-toggle:has(input[type="checkbox"]:checked) .big-toggle-text {
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* end enhanced big-toggle */
+
+.big-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 12px;
+  margin: 6px 0;
+  border-radius: 10px;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  transition: background .14s ease, border-color .14s ease, transform .06s ease, box-shadow .12s ease;
+  box-sizing: border-box;
+  background: transparent;
+}
+.big-toggle input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  flex: 0 0 auto;
+  appearance: auto;
+}
+.big-toggle .big-toggle-text {
+  flex: 1 1 auto;
+  line-height: 1.2;
+  font-size: 14px;
+  color: var(--text, #222);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.big-toggle:hover {
+  background: rgba(0,0,0,0.03);
+  border-color: rgba(0,0,0,0.06);
+}
+.big-toggle:active {
+  transform: translateY(1px);
+}
+.big-toggle input[type="checkbox"]:focus + .big-toggle-text,
+.big-toggle input[type="checkbox"]:checked + .big-toggle-text {
+  font-weight: 600;
+  color: var(--accent, #0b66ff);
+}
+.big-toggle input[type="checkbox"]:checked + .big-toggle-text {
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,0.02);
+}
+.big-toggle input[type="checkbox"]:focus {
+  outline: 2px solid rgba(11,102,255,0.16);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+/* end big-toggle */
+
+/* === Improved pill-button controls for reminder checkboxes === */
+/* Make the entire pill area act like a button and easier to tap/click */
+.toolbar label.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #fff;
+  cursor: pointer;
+  user-select: none;
+  transition: transform .08s ease, box-shadow .12s ease, background .12s ease;
+  position: relative;
+}
+
+/* Hide the native checkbox but keep it in the DOM for accessibility & JS */
+.toolbar label.pill input[type="checkbox"] {
+  position: absolute !important;
+  left: 8px;
+  width: 18px;
+  height: 18px;
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Style the visible label text area */
+.toolbar label.pill span {
+  display:inline-block;
+  padding:6px 10px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Hover / pointer feedback */
+.toolbar label.pill:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(16,24,40,0.08);
+}
+
+/* Checked state (uses sibling selector since input comes before span) */
+.toolbar label.pill input[type="checkbox"]:checked + span {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #059669;
+}
+
+/* Subtle focus style for keyboard users */
+.toolbar label.pill input[type="checkbox"]:focus + span,
+.toolbar label.pill:focus-within {
+  outline: 3px solid rgba(37,99,235,0.12);
+  outline-offset: 3px;
+}
+
+/* Danger (不再提醒) should be prominent: red background, white text */
+.pill.danger {
+  /* ensure visual prominence even when unchecked */
+  background: #ef4444;
+  color: #fff !important;
+  border-color: #ef4444;
+}
+.pill.danger span {
+  background: transparent;
+  color: #0a0000 !important;
+  border-color: transparent;
+  font-weight: 700;
+}
+
+/* When danger is checked, slightly darker red to indicate active state */
+.pill.danger input[type="checkbox"]:checked + span {
+  background: rgba(0,0,0,0.06);
+  box-shadow: inset 0 -2px 0 rgba(0,0,0,0.06);
+}
+
+/* Mobile: make pills full width for easier tapping */
+@media (max-width: 768px) {
+  .toolbar label.pill { width: 100%; justify-content: flex-start; }
+  .toolbar label.pill span { width: auto; }
+}
+
+
+
+/* Generic confirm/alert modal */
+.confirm-modal { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.45); z-index: 10050; padding: 20px; }
+.confirm-modal[aria-hidden="true"] { display: none; }
+.confirm-panel { background: #fff; padding: 18px; border-radius: 12px; max-width: 560px; width: calc(100% - 40px); box-shadow: 0 8px 36px rgba(0,0,0,0.25); }
+.confirm-panel h3 { margin:0 0 8px 0; font-size:18px; }
+.confirm-message { margin:8px 0 16px 0; color:#333; line-height:1.4; }
+.confirm-actions { display:flex; justify-content:flex-end; gap:8px; }
+.btn-danger { background:#e74c3c; color:#fff; border: none; padding:8px 12px; border-radius:8px; cursor:pointer; }
+.btn-secondary { background:#f0f0f0; color:#333; border: none; padding:8px 12px; border-radius:8px; cursor:pointer; }
+.btn-primary { background:#0b74de; color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; }
+.confirm-panel .btn { min-width:80px; }
+
+/* prevent wrapping for important columns in ignore manager */
+.ignore-manager-table .no-wrap{ white-space: nowrap; }
+
+
+
+/* multiple LINE/Facebook ID inputs */
+#lineIdContainer { display:flex; flex-direction:column; gap:6px; }
+.lineid-row { display:flex; gap:8px; align-items:center; }
+.lineid-input { padding:8px; border-radius:6px; border:1px solid var(--border); min-width:180px; }
+.lineid-remove { padding:6px 8px; border-radius:6px; cursor:pointer; border:1px solid var(--border); background:var(--card-bg, #fff); }
+#addLineIdBtn { margin-top:6px; }
+
+
+
+
+/* 美化 +新增ID 按鈕 */
+.btn-add-id{
+  margin-top:4px; background: var(--primary); color:#fff; border:none; border-radius:8px; padding:6px 12px; cursor:pointer; 
+}
+
+/* tweak remove button on each id row */
+.lineid-remove{
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.06);
+  color: #ef4444;
+  padding:6px 8px;
+  border-radius:6px;
+  cursor:pointer;
+  transition: background .12s ease, transform .12s ease;
+}
+.lineid-remove:hover{ background: rgba(239,68,68,0.06); transform: translateY(-1px); }
+
+
+/* History modal: prevent wrapping for name/date/phone cells and make rows clickable */
+.history-table-wrap td.no-wrap { white-space: nowrap; }
+.history-row-clickable { cursor: pointer; }
+.history-row-clickable:hover { background-color: rgba(11,116,222,0.06); }
+
+
+
+/* Custom input modal for add staff/contact */
+.input-modal .modal-panel {
+  width: 520px;
+  max-width: calc(100% - 40px);
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.18);
+  overflow: hidden;
+}
+.input-modal .modal-body {
+  padding: 18px 20px;
+  background: #fff;
+}
+.input-modal .modal-header {
+  padding: 12px 16px;
+  background: linear-gradient(90deg,#fff 0%, #f8fafc 100%);
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.input-modal .modal-header h3 { margin:0; font-size:16px; }
+.input-modal .modal-footer {
+  padding: 12px 16px;
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  background:#fafafa;
+  border-top:1px solid rgba(0,0,0,0.04);
+}
+.input-modal .form-input {
+  width:100%;
+  padding:10px 12px;
+  font-size:14px;
+  border-radius:8px;
+  border:1px solid rgba(15,23,42,0.08);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+  outline:none;
+}
+.input-modal .form-input:focus {
+  border-color: #0b74de;
+  box-shadow: 0 0 0 4px rgba(11,116,222,0.08);
+}
+.input-modal .btn { background:#0b74de; color:#fff; padding:8px 14px; border-radius:8px; border:none; }
+.input-modal .btn-ghost { background:transparent; color:#334155; border:1px solid rgba(15,23,42,0.06); padding:8px 12px; border-radius:8px; }
