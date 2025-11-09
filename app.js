@@ -2787,6 +2787,26 @@ function saveIgnoredHistoryIds(set) {
   } catch(e){}
 }
 
+
+// === Pair-based ignore (per-source-order vs target-history) ===
+const IGNORED_PAIRS_KEY = 'ignoredHistoryPairs_v1';
+function makePairKey(a, b){
+  const a1 = String(a||''); const b1 = String(b||'');
+  return [a1,b1].sort().join('::');
+}
+function loadIgnoredHistoryPairs(){
+  try {
+    const raw = localStorage.getItem(IGNORED_PAIRS_KEY);
+    const arr = raw ? JSON.parse(raw) : [];
+    return new Set(Array.isArray(arr) ? arr : []);
+  } catch(e){ return new Set(); }
+}
+function saveIgnoredHistoryPairs(set){
+  try {
+    const arr = Array.from(set || []);
+    localStorage.setItem(IGNORED_PAIRS_KEY, JSON.stringify(arr));
+  } catch(e){}
+}
 // Normalize address for matching (simple)
 function normalizeAddress(a){
   if(!a) return '';
@@ -2843,7 +2863,6 @@ function getOrderIdentifiers(o){
 function rebuildCustomerHistoryMap() {
   try {
     const all = (typeof orders !== 'undefined') ? orders : [];
-    const ignored = loadIgnoredHistoryIds();
     // union-find via id -> groupId mapping, groups store identifier sets and order lists
     const idToGroup = new Map();
     const groupData = new Map(); // groupId -> {ids: Set, orders: Set(orderIds)}
@@ -2876,7 +2895,7 @@ function rebuildCustomerHistoryMap() {
       try {
         const orderId = (o.id || o._id || '');
         if (!orderId) return;
-        if (ignored.has(orderId)) return; // skip ignored
+// skip ignored
         // determine timestamp
         let ts = null;
         if (o.datetimeISO) ts = new Date(o.datetimeISO);
@@ -2981,9 +3000,18 @@ function renderHistoryModal(customerKey, titleText) {
 
   title.textContent = titleText || '客戶歷史紀錄';
   body.innerHTML = '';
+  // Pair-based ignore: filter list by (fromOrderId,targetId) pairs
+  const fromId = (modal.dataset && modal.dataset.fromOrderId) ? modal.dataset.fromOrderId : '';
+  const ignoredPairs = (typeof loadIgnoredHistoryPairs === 'function') ? loadIgnoredHistoryPairs() : new Set();
+
+
 
   const list = getHistoryByCustomerKey(customerKey);
-  if (!list || !list.length) {
+  const filteredList = (list || []).filter(o => {
+    const oid = (o.id || o._id || '');
+    return !ignoredPairs.has(makePairKey(fromId, oid));
+  });
+  if (!filteredList.length) {
     empty.style.display = 'block';
     modal.setAttribute('aria-hidden', 'false');
     modal.dataset.customerKey = customerKey;
@@ -2991,11 +3019,7 @@ function renderHistoryModal(customerKey, titleText) {
     return;
   }
   empty.style.display = 'none';
-
-  // build ignored set for quick lookup
-  const ignoredSet = new Set((loadIgnoredHistoryIds && Array.from(loadIgnoredHistoryIds()) ) || []);
-
-  // create rows
+// create rows
   list.forEach(o=>{
     // Name
     const nameText = (o.name || o.customer || o.contact || '') + '';
@@ -3032,10 +3056,18 @@ function renderHistoryModal(customerKey, titleText) {
       <td>${escapeHtml(addr)}</td>
       <td>${escapeHtml(notes)}</td>
       <td>
-        <button class="btn-small history-ignore-row" data-order-id="${tr.dataset.orderId}">${ignoredSet.has(tr.dataset.orderId) ? '已忽略' : '忽略'}</button>
+        <button class="btn-small history-ignore-row" data-order-id="${tr.dataset.orderId}">忽略</button>
       </td>
     `;
     body.appendChild(tr);
+    // set ignore button label based on pair-ignore
+    const btnIgnore2 = tr.querySelector('.history-ignore-row');
+    if (btnIgnore2) {
+      const targetId = tr.dataset.orderId || '';
+      const isIgnored = (typeof loadIgnoredHistoryPairs === 'function') ? loadIgnoredHistoryPairs().has(makePairKey(fromId, targetId)) : false;
+      btnIgnore2.textContent = isIgnored ? '已忽略' : '忽略';
+    }
+
 
     // Clicking the row opens the order (unless click target is the ignore button)
     tr.addEventListener('click', (ev) => {
@@ -3057,14 +3089,14 @@ function renderHistoryModal(customerKey, titleText) {
     const btnIgnore = tr.querySelector('.history-ignore-row');
     if (btnIgnore) btnIgnore.addEventListener('click', (ev)=>{
       ev.stopPropagation();
-      const id = ev.currentTarget.dataset.orderId;
-      if (!id) return;
-      const ignored = loadIgnoredHistoryIds ? new Set(loadIgnoredHistoryIds()) : new Set();
-      if (ignored.has(id)) ignored.delete(id);
-      else ignored.add(id);
-      saveIgnoredHistoryIds && saveIgnoredHistoryIds(ignored);
-      // rebuild cache and re-render modal and table badges
-      try { rebuildCustomerHistoryMap(); } catch(e){}
+      const targetId = ev.currentTarget.dataset.orderId;
+      if (!targetId) return;
+      const from = (modal.dataset && modal.dataset.fromOrderId) ? modal.dataset.fromOrderId : '';
+      const pairs = (typeof loadIgnoredHistoryPairs === 'function') ? loadIgnoredHistoryPairs() : new Set();
+      const k = makePairKey(from, targetId);
+      if (pairs.has(k)) pairs.delete(k); else pairs.add(k);
+      if (typeof saveIgnoredHistoryPairs === 'function') saveIgnoredHistoryPairs(pairs);
+      // re-render modal and update badges
       renderHistoryModal(customerKey, titleText);
       try { transformCustomerCells(); } catch(e){}
     });
@@ -3162,7 +3194,15 @@ function transformCustomerCells() {
       // Determine history list and count for this customer (use cache)
       let histList = [];
       try {
-        histList = getHistoryByCustomerKey(key) || [];
+        {
+        const fromId = (tr.dataset && tr.dataset.orderId) || '';
+        const pairs = (typeof loadIgnoredHistoryPairs === 'function') ? loadIgnoredHistoryPairs() : new Set();
+        const list0 = getHistoryByCustomerKey(key) || [];
+        histList = list0.filter(o => {
+          const oid = (o.id || o._id || '');
+          return !pairs.has(makePairKey(fromId, oid));
+        });
+      }
       } catch(e) { histList = []; }
 
       const count = Array.isArray(histList) ? histList.length : 0;
@@ -3180,6 +3220,8 @@ function transformCustomerCells() {
 
         btn.addEventListener('click', (e)=>{
           const modal = document.getElementById('historyModal');
+          const fromId = (e.currentTarget.closest('tr')?.dataset?.orderId) || '';
+          modal.dataset.fromOrderId = fromId;
           modal.dataset.customerKey = key;
           modal.dataset.title = nameText || key;
           renderHistoryModal(key, nameText || key);
@@ -3546,7 +3588,6 @@ function closeIgnoreManager() {
   modal.style.display = 'none';
 }
 function getIgnoredEntries() {
-  const ignored = loadIgnoredHistoryIds();
   const all = (typeof orders !== 'undefined') ? orders : [];
   const entries = [];
   ignored.forEach(id => {
